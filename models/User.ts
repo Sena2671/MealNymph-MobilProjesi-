@@ -1,8 +1,8 @@
-import { BSON } from 'realm';
+import Realm from 'realm';
 
 // Kullanıcı şeması
-export class User {
-  _id!: BSON.ObjectId;
+export class User extends Realm.Object {
+  _id!: Realm.BSON.ObjectId;
   email!: string;
   password!: string;
   name!: string;
@@ -14,7 +14,7 @@ export class User {
   healthStatus!: string;
   createdAt!: Date;
 
-  static schema = {
+  static schema: Realm.ObjectSchema = {
     name: 'User',
     primaryKey: '_id',
     properties: {
