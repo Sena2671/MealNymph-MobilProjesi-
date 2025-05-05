@@ -1,74 +1,198 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { useAuth } from '../../contexts/AuthContext';
+import { Ionicons } from '@expo/vector-icons';
+import { colors } from '../../constants/theme';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+interface QuickAccessCardProps {
+  title: string;
+  icon: keyof typeof Ionicons.glyphMap;
+  onPress: () => void;
+}
 
 export default function HomeScreen() {
+  const { user } = useAuth();
+
+  const QuickAccessCard: React.FC<QuickAccessCardProps> = ({ title, icon, onPress }) => (
+    <TouchableOpacity style={styles.quickAccessCard} onPress={onPress}>
+      <Ionicons name={icon} size={24} color={colors.primary} />
+      <Text style={styles.quickAccessText}>{title}</Text>
+    </TouchableOpacity>
+  );
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.welcome}>Hoş Geldin, {user?.name || 'Misafir'}</Text>
+        <Text style={styles.subtitle}>Bugünkü öğün planın hazır!</Text>
+      </View>
+
+      <View style={styles.quickAccessContainer}>
+        <QuickAccessCard 
+          title="Öğün Ekle" 
+          icon="add-circle-outline" 
+          onPress={() => {}} 
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        <QuickAccessCard 
+          title="Tarifler" 
+          icon="book-outline" 
+          onPress={() => {}} 
+        />
+        <QuickAccessCard 
+          title="Alışveriş Listesi" 
+          icon="cart-outline" 
+          onPress={() => {}} 
+        />
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Günlük Öğün Planı</Text>
+        <View style={styles.mealPlanCard}>
+          <Text style={styles.mealTime}>Kahvaltı</Text>
+          <Text style={styles.mealName}>Yulaf Ezmesi ve Meyve</Text>
+          <Text style={styles.mealTime}>Öğle Yemeği</Text>
+          <Text style={styles.mealName}>Izgara Tavuk Salata</Text>
+          <Text style={styles.mealTime}>Akşam Yemeği</Text>
+          <Text style={styles.mealName}>Sebzeli Makarna</Text>
+        </View>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Günlük Besin Takibi</Text>
+        <View style={styles.nutritionCard}>
+          <View style={styles.nutritionItem}>
+            <Text style={styles.nutritionValue}>1200</Text>
+            <Text style={styles.nutritionLabel}>Kalori</Text>
+          </View>
+          <View style={styles.nutritionItem}>
+            <Text style={styles.nutritionValue}>65g</Text>
+            <Text style={styles.nutritionLabel}>Protein</Text>
+          </View>
+          <View style={styles.nutritionItem}>
+            <Text style={styles.nutritionValue}>45g</Text>
+            <Text style={styles.nutritionLabel}>Yağ</Text>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Önerilen Tarifler</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <TouchableOpacity style={styles.recipeCard}>
+            <Text style={styles.recipeTitle}>Sağlıklı Smoothie</Text>
+            <Text style={styles.recipeDesc}>Muz, çilek ve yulaf</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.recipeCard}>
+            <Text style={styles.recipeTitle}>Quinoa Salata</Text>
+            <Text style={styles.recipeDesc}>Sebzeli ve proteinli</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  header: {
+    padding: 20,
+    backgroundColor: colors.background,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  welcome: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: colors.primary,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: colors.textLight,
+  },
+  quickAccessContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 20,
+    backgroundColor: colors.background,
+    marginTop: 10,
+  },
+  quickAccessCard: {
     alignItems: 'center',
-    gap: 8,
+    padding: 15,
+    backgroundColor: '#FFF8E1', // Sarının açık tonu
+    borderRadius: 10,
+    width: '30%',
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  quickAccessText: {
+    marginTop: 5,
+    fontSize: 12,
+    color: colors.text,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  section: {
+    padding: 20,
+    backgroundColor: colors.background,
+    marginTop: 10,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    color: colors.primary,
+  },
+  mealPlanCard: {
+    backgroundColor: '#FFF8E1', // Sarının açık tonu
+    padding: 15,
+    borderRadius: 10,
+  },
+  mealTime: {
+    fontSize: 14,
+    color: colors.textLight,
+    marginTop: 10,
+  },
+  mealName: {
+    fontSize: 16,
+    fontWeight: '500',
+    marginBottom: 5,
+    color: colors.text,
+  },
+  nutritionCard: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    backgroundColor: '#FFF8E1', // Sarının açık tonu
+    padding: 15,
+    borderRadius: 10,
+  },
+  nutritionItem: {
+    alignItems: 'center',
+  },
+  nutritionValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: colors.primary,
+  },
+  nutritionLabel: {
+    fontSize: 12,
+    color: colors.textLight,
+    marginTop: 5,
+  },
+  recipeCard: {
+    backgroundColor: '#FFF8E1', // Sarının açık tonu
+    padding: 15,
+    borderRadius: 10,
+    marginRight: 10,
+    width: 200,
+  },
+  recipeTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: colors.text,
+  },
+  recipeDesc: {
+    fontSize: 12,
+    color: colors.textLight,
+    marginTop: 5,
   },
 });
